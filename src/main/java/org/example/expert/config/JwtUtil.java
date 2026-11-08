@@ -24,7 +24,7 @@ public class JwtUtil {
     private static final long TOKEN_TIME = 60 * 60 * 1000L; // 60분
 
     // application.yml이 없었고 @Value에서 필요한 jwt.secret.key 값도 지정해 주지않았기 때문에 파일 생성 후 키값 선언 후 Value값에 선언한 키값 넣어서 문제 해결
-    @Value("IfthisgetsstolenitsabigproblemIfthelengthistooshortthesecurityisnotsufficientsoanerroroccurs")
+    @Value("${jwt.secret.key}")
     private String secretKey;
     private Key key;
     private final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
