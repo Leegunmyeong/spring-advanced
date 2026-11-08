@@ -22,18 +22,26 @@ public class WeatherClient {
         this.restTemplate = builder.build();
     }
 
+    // Lv 2-2 리팩토링 퀴즈 - 불필요한 if-else 피하기
+    /*
+     * 조건 A, 조건 B라고 한다면 A 통과 B 통과 따로따로 보는게 코드 가독성이 더 좋다고 생각했고
+     * else를 지우고 조건 B라는 if문으로 떨어뜨려놓았습니다
+     *
+     */
     public String getTodayWeather() {
         ResponseEntity<WeatherDto[]> responseEntity =
                 restTemplate.getForEntity(buildWeatherApiUri(), WeatherDto[].class);
 
         WeatherDto[] weatherArray = responseEntity.getBody();
+        // 조건 A
         if (!HttpStatus.OK.equals(responseEntity.getStatusCode())) {
             throw new ServerException("날씨 데이터를 가져오는데 실패했습니다. 상태 코드: " + responseEntity.getStatusCode());
-        } else {
-            if (weatherArray == null || weatherArray.length == 0) {
-                throw new ServerException("날씨 데이터가 없습니다.");
-            }
         }
+        // 조건 B
+        if (weatherArray == null || weatherArray.length == 0) {
+            throw new ServerException("날씨 데이터가 없습니다.");
+        }
+
 
         String today = getCurrentDate();
 
