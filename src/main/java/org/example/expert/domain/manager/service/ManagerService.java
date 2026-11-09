@@ -35,7 +35,16 @@ public class ManagerService {
         Todo todo = todoRepository.findById(todoId)
                 .orElseThrow(() -> new InvalidRequestException("Todo not found"));
 
-        if (!ObjectUtils.nullSafeEquals(user.getId(), todo.getUser().getId())) {
+        // Lv 4-2(3번 케이스): 테스트 코드 연습(2)
+        // 문제: 로그인한 유저 아이디(user.getId())와 일정을 작성한 유저 아이디(todo.getUser().getId())
+        // 불일치 시 예외 발생(기존 예외 처리)
+        // 현재 서비스 로직에서 NPE가 발생되어 지정해놓은 예외처리가 아닌 다른 예외 처리가 발생되어
+        // 테스트 코드의 기댓값과 로직의 기댓값이 다르게 나와서 실패가 됨
+        // 이건 테스트 코드 문제가 아닌 서비스 로직에서 NPE 방지를 해주지않아서 NPE 현상이 발생됨
+        // 1. 일정 작성자가 null인지 먼저 확인(NPE 방지)
+        // 2. 로그인한 유저와 일정 작성한 유저의 ID를 비교하면 된다고 생각
+        // 논리 -> 작성자가 없거나 Id가 서로 다르면 지정 권한(X) 예외 발생
+        if (todo.getUser() == null || !ObjectUtils.nullSafeEquals(user.getId(), todo.getUser().getId())) {
             throw new InvalidRequestException("일정을 생성한 유저만 담당자를 지정할 수 있습니다.");
         }
 
