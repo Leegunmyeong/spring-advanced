@@ -38,17 +38,23 @@ class ManagerServiceTest {
     @InjectMocks
     private ManagerService managerService;
 
+    // Lv 4-2(1번 케이스): 테스트 코드 연습(2)
+    // NPE -> IRE(InvalidRequestException) 수정
+    // 예외 메세지 Manager not found -> 컨텍스트에 예외 메세지랑 동일한 Todo not found 로 수정
     @Test
-    public void manager_목록_조회_시_Todo가_없다면_NPE_에러를_던진다() {
+    public void manager_목록_조회_시_Todo가_없다면_IRE_에러를_던진다() {
         // given
         long todoId = 1L;
         given(todoRepository.findById(todoId)).willReturn(Optional.empty());
 
         // when & then
         InvalidRequestException exception = assertThrows(InvalidRequestException.class, () -> managerService.getManagers(todoId));
-        assertEquals("Manager not found", exception.getMessage());
+        assertEquals("Todo not found", exception.getMessage());
     }
 
+    // Lv 4-2(3번 케이스): 테스트 코드 연습(2)
+    // 서비스 로직 수정 완료
+    // 서비스 로직 수정 -> 논리 연산자 사용 및 논리 조건 추가로 NPE 방지
     @Test
     void todo의_user가_null인_경우_예외가_발생한다() {
         // given
